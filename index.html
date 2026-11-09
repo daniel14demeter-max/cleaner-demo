@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cleaner</title>
+<style>
+:root{--blue:#2f6bff;--blue2:#5aa2ff;--rgb:47,107,255;--rgb2:90,162,255;--lrgb:110,145,225;--t1:#e4eeff;--t2:#cfe0ff;--b1:#e6efff;--b3:#e3edff;--ink:#0f1b3d;--mut:#6b7a99;--line:rgba(var(--lrgb),.28);--glass:rgba(255,255,255,.62);--glow:0 10px 34px rgba(var(--rgb),.25)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,Segoe UI,Arial,sans-serif}
+body{background:linear-gradient(135deg,var(--b1) 0%,#f8fbff 50%,var(--b3) 100%);display:flex;justify-content:center;min-height:100vh;color:var(--ink);position:relative;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;width:420px;height:420px;border-radius:50%;filter:blur(90px);z-index:0;pointer-events:none}
+body::before{background:rgba(var(--rgb),.35);top:-120px;left:-120px}
+body::after{background:rgba(var(--rgb2),.35);bottom:-140px;right:-120px}
+#app{width:100%;max-width:430px;min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1;background:rgba(255,255,255,.28);backdrop-filter:blur(6px);box-shadow:0 0 60px rgba(var(--rgb),.12)}
+header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.7);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;pointer-events:none}header{min-height:66px}header button.in{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-color:transparent}.hiba{color:#d93a4a;font-size:13px;font-weight:700;margin-top:12px}
+.logo .lg{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--blue),var(--blue2));display:grid;place-items:center;color:#fff;box-shadow:0 6px 18px rgba(var(--rgb),.45)}
+.logo .lg svg{width:19px;height:19px}
+.logo span{font-size:21px;font-weight:800;letter-spacing:-.3px;background:linear-gradient(90deg,var(--ink),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+header button{background:rgba(255,255,255,.8);border:1px solid var(--line);color:var(--blue);width:38px;height:38px;border-radius:12px;cursor:pointer;display:grid;place-items:center;font-size:22px;transition:.25s}
+header button svg{width:19px;height:19px}
+header button:hover{box-shadow:var(--glow);transform:translateY(-2px)}
+.nyelv{display:flex;gap:4px;margin:14px 18px 0;padding:4px;border-radius:14px;background:var(--glass);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.9);box-shadow:0 6px 24px rgba(var(--rgb),.08)}
+.nyelv button{flex:1;padding:9px 0;border:0;border-radius:10px;background:transparent;color:var(--mut);font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:.25s}
+.nyelv button:hover{color:var(--blue)}
+.nyelv button.on{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 6px 18px rgba(var(--rgb),.4)}
+.demo{margin:12px 18px 0;background:rgba(255,255,255,.55);border:1px dashed var(--line);color:var(--mut);font-size:11.5px;text-align:center;padding:6px;border-radius:10px}
+.szinek{display:none;justify-content:center;gap:12px;margin:12px 18px 0}.szinek button{width:30px;height:30px;border-radius:50%;border:3px solid #fff;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:.25s}.szinek button:hover{transform:scale(1.15)}.szinek button.on{box-shadow:0 0 0 2px var(--blue),0 4px 14px rgba(var(--rgb),.5)}
+.lepes{display:flex;gap:6px;padding:14px 18px 0}
+.lepes i{flex:1;height:5px;border-radius:3px;background:rgba(var(--lrgb),.2);transition:.4s}
+.lepes i.on{background:linear-gradient(90deg,var(--blue),var(--blue2));box-shadow:0 0 10px rgba(var(--rgb),.6)}
+main{flex:1;padding:18px 18px 120px}
+main.anim{animation:fel .45s ease}
+@keyframes fel{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h2{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px}
+.al{color:var(--mut);font-size:14px;margin-bottom:16px;line-height:1.45}
+.kartya{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.95);border-radius:20px;padding:14px;margin-bottom:12px;display:flex;gap:13px;align-items:center;cursor:pointer;box-shadow:0 8px 30px rgba(var(--rgb),.10);transition:transform .25s,box-shadow .25s,border-color .25s}
+.kartya:hover{transform:translateY(-3px);box-shadow:0 14px 38px rgba(var(--rgb),.2)}
+.kartya.on{border-color:var(--blue);box-shadow:0 0 0 2px rgba(var(--rgb),.35),var(--glow);background:rgba(255,255,255,.85)}
+.lista .kartya{cursor:default}
+.kartya .ik{width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--t1),var(--t2));color:var(--blue)}
+.kartya .ik svg{width:24px;height:24px}
+.kartya.on .ik{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 6px 16px rgba(var(--rgb),.45)}
+.kartya>div:nth-child(2){flex:1;min-width:0}
+.kartya b{display:block;font-size:15.5px}
+.kartya small{color:var(--mut);font-size:12.5px}
+.kartya .ar{margin-left:auto;font-weight:800;color:var(--blue);white-space:nowrap;font-size:15px}
+.kartya a{color:var(--blue);font-size:13px;font-weight:700;cursor:pointer}
+.kartya ul{margin:8px 0 0 18px;font-size:13.5px;line-height:1.7;color:#33415f}
+.kartya ul li::marker{color:var(--blue)}
+.av{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue2));box-shadow:0 6px 16px rgba(var(--rgb),.4)}
+.chk{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);display:grid;place-items:center;color:transparent;flex:none;transition:.25s;background:#fff}
+.chk svg{width:15px;height:15px}
+.kartya.on .chk{background:linear-gradient(135deg,var(--blue),var(--blue2));border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(var(--rgb),.5)}
+.csillag{color:#f5b301}
+label{display:block;font-size:12.5px;font-weight:700;margin:14px 0 6px;color:#33415f}
+input,select,textarea{width:100%;padding:13px 14px;border:1px solid rgba(255,255,255,.95);border-radius:14px;font-size:16px;background:rgba(255,255,255,.75);backdrop-filter:blur(10px);color:var(--ink);box-shadow:0 4px 16px rgba(var(--rgb),.08);transition:.25s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(var(--rgb),.22),var(--glow)}
+.sor{display:flex;gap:10px}.sor>div{flex:1}
+.osszeg{background:var(--glass);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.95);border-radius:20px;padding:8px 16px;margin-top:6px;box-shadow:0 8px 30px rgba(var(--rgb),.1)}
+.osszeg div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:14.5px;border-bottom:1px solid var(--line)}
+.osszeg div span:first-child{color:var(--mut)}
+.osszeg div span:last-child{text-align:right;font-weight:600}
+.osszeg div:last-child{border:0;font-weight:800;font-size:19px}
+.osszeg div:last-child span:first-child{color:var(--ink)}
+.osszeg div:last-child span:last-child{color:var(--blue)}
+footer{position:fixed;bottom:0;width:100%;max-width:430px;padding:14px 18px;background:rgba(255,255,255,.75);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;gap:10px;z-index:6}
+.gomb{flex:1;padding:16px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-size:16.5px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(var(--rgb),.45);transition:transform .25s,box-shadow .25s}
+.gomb:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 36px rgba(var(--rgb),.55)}
+.gomb:active:not(:disabled){transform:scale(.98)}
+.gomb:disabled{background:#c5d3ee;box-shadow:none;cursor:not-allowed}
+.kesz{text-align:center;padding:26px 6px}
+.kesz .ok{width:96px;height:96px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue2));box-shadow:0 0 0 10px rgba(var(--rgb),.12),0 0 40px rgba(var(--rgb),.55);animation:pop .6s ease}
+.kesz .ok svg{width:46px;height:46px}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.allapot{display:flex;justify-content:space-between;margin:26px 0 10px;font-size:12px;color:var(--mut)}
+.allapot span.on{color:var(--blue);font-weight:800}
+.sav{height:8px;background:rgba(var(--lrgb),.2);border-radius:4px;overflow:hidden}
+.sav div{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue2));width:33%;transition:width .8s;box-shadow:0 0 12px rgba(var(--rgb),.7)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header><button id="vissza" onclick="vissza()" style="display:none">‹</button><div class="logo"><span>Cleaner</span></div><button onclick="fiokGomb()" id="fiokbtn" style="margin-left:auto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg></button><button onclick="elozmeny()" id="elozbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button></header>
+  <div class="nyelv" id="nyelv"></div>
+  <div class="demo" id="demo"></div>
+  <div class="szinek" id="szinek"></div>
+  <div class="lepes" id="lepes"></div>
+  <main id="tartalom"></main>
+  <footer id="lab"></footer>
+</div>
+<script>
+// =====================================================================
+//  ITT ÁLLÍTHATÓ: nyelvek, szövegek, csomagok, árak, extrák, takarítók
+//  (az árak számai ugyanazok minden nyelven; a pénznem neve nyelvenként más)
+// =====================================================================
+const MEM={};
+const ST={get(k){try{const v=localStorage.getItem(k);if(v!==null)return v}catch(e){}return k in MEM?MEM[k]:null},set(k,v){MEM[k]=v;try{localStorage.setItem(k,v)}catch(e){}},del(k){delete MEM[k];try{localStorage.removeItem(k)}catch(e){}}};
+const NYELVEK = ['hu','ro','en'];
+const ALAP_NYELV = 'ro';           // alapból román
+const UTVONAL_PERC = 25;           // demo: ennyi perc múlva "érkezik"
+
+const T = {
+ hu:{ penz:'lej', demo:'SABLON / DEMO – a rendelések csak ebben a böngészőben mentődnek',
+  csomagCim:'Válassz csomagot', csomagAl:'Fix ár, nincs meglepetés. Nyomd meg a „Mi tartozik bele?” gombot a részletekért.',
+  mitTart:'▼ Mi tartozik bele?', elrejt:'▲ Elrejt', tovabb:'Tovább', ora:'óra', kb:'kb.',
+  hovaCim:'Hova menjen a takarító?', hovaAl:'Add meg a címet és a lakás méretét',
+  cim:'Cím (utca, szám, lépcsőház, lakás)', cimPh:'pl. Str. Gheorghe Doja 12, ap. 5', meret:'Lakás mérete (m²)', tel:'Telefonszám', megj:'Megjegyzés (kulcs, kutya, kapukód…)',
+  hianyAdat:'Kérlek add meg a címet és a telefonszámot.',
+  mikorCim:'Mikor jöjjön?', mikorAl:'Válassz napot és időpontot', nap:'Nap', kezdes:'Kezdés', extrak:'Extrák (nem kötelező)', hianyNap:'Válassz napot.',
+  tCim:'Válassz takarítót', tAl:'Ellenőrzött, értékelt takarítók', takaritas:'takarítás',
+  oCim:'Összegzés', oAl:'Ellenőrizd, aztán rendeld meg', csomag:'Csomag', cimK:'Cím', idopont:'Időpont', takarito:'Takarító', fizetendo:'Fizetendő',
+  fizMod:'Fizetés módja', keszpenz:'Készpénz a takarítónak', kartya:'Bankkártya (demo)', megrendel:'Megrendelem –',
+  keszCim:'Megrendelés elküldve!', elfogadta:(n,d,t)=>`${n} elfogadta. ${d} ${t}-kor érkezik.`, st1:'Elfogadva', st2:'Úton', st3:'Megérkezett',
+  uton:(p)=>`Úton van hozzád (kb. ${p} perc) – demo állapot.`, elfogadtaRov:'A takarító elfogadta a rendelést.', uj:'Új rendelés',
+  rendCim:'Rendeléseim', vanRend:'Korábbi rendelések', nincsRend:'Még nincs rendelésed',
+  authCim:'Jelentkezz be a rendeléshez', authAl:'A rendeléshez fiók kell, így később is látod a rendeléseidet.', bej:'Bejelentkezés', reg:'Regisztráció', nev:'Név', email:'E-mail cím', jelszo:'Jelszó', jelszo2:'Legalább 6 karakter',
+  hianyMezo:'Tölts ki minden mezőt.', rosszJelszo:'Hibás e-mail cím vagy jelszó.', foglalt:'Ezzel az e-mail címmel már van fiók.', rovidJelszo:'A jelszó legalább 6 karakter legyen.',
+  udv:'Szia', kijel:'Kijelentkezés', rendSzam:'Rendeléseid száma', demoJelszo:'Demo: a fiók csak ebben a böngészőben létezik.',
+  szUgyfel:'Rendelni szeretnék', szTakarito:'Takarítóként dolgozom', bardki:'Bárki, aki először elfogadja', bardkiAl:'Ez a leggyorsabb', keszAl:'Amint egy takarító elfogadja, a Rendeléseim listában látni fogod.',
+  sUj:'Várakozik', sElf:'Elfogadva', sKesz:'Kész', tUj:'Új', tMunk:'Munkáim', tKer:'Keresetem', elfogad:'Elfogadom', befejez:'Kész – befejeztem', cimLatszik:'A cím elfogadás után látszik',
+  nincsUj:'Jelenleg nincs új rendelés.', nincsMunka:'Még nincs elfogadott munkád.', keresKesz:'Elvégzett munkák', keresVar:'Elfogadott, még nem kész', keresOssz:'Eddigi keresetem',
+  jutInfo:p=>`A Cleaner jutaléka ${p}%, a többi a tiéd.`, nincsTak:'Még nincs regisztrált takarító, a rendelést bárki elfogadhatja.', db:'db',
+  szerNote:'A tisztítószereket és eszközöket a takarító hozza, az ár tartalmazza.', sajatSzer:'Van otthon tisztítószerem' },
+ ro:{ penz:'lei', demo:'ȘABLON / DEMO – comenzile se salvează doar în acest browser',
+  csomagCim:'Alege pachetul', csomagAl:'Preț fix, fără surprize. Apasă „Ce include?” pentru detalii.',
+  mitTart:'▼ Ce include?', elrejt:'▲ Ascunde', tovabb:'Mai departe', ora:'ore', kb:'aprox.',
+  hovaCim:'Unde să vină curățenia?', hovaAl:'Introdu adresa și dimensiunea locuinței',
+  cim:'Adresa (stradă, număr, scară, apartament)', cimPh:'ex. Str. Gheorghe Doja 12, ap. 5', meret:'Suprafața locuinței (m²)', tel:'Număr de telefon', megj:'Observații (cheie, câine, cod poartă…)',
+  hianyAdat:'Te rugăm să introduci adresa și numărul de telefon.',
+  mikorCim:'Când să vină?', mikorAl:'Alege ziua și ora', nap:'Ziua', kezdes:'Ora de început', extrak:'Extra (opțional)', hianyNap:'Alege ziua.',
+  tCim:'Alege curățătoarea', tAl:'Curățătoare verificate, cu recenzii', takaritas:'curățenii',
+  oCim:'Rezumat', oAl:'Verifică și trimite comanda', csomag:'Pachet', cimK:'Adresa', idopont:'Data și ora', takarito:'Curățătoare', fizetendo:'Total de plată',
+  fizMod:'Metoda de plată', keszpenz:'Numerar către curățătoare', kartya:'Card bancar (demo)', megrendel:'Trimite comanda –',
+  keszCim:'Comandă trimisă!', elfogadta:(n,d,t)=>`${n} a acceptat. Ajunge ${d} la ora ${t}.`, st1:'Acceptată', st2:'În drum', st3:'Ajunsă',
+  uton:(p)=>`Este în drum spre tine (aprox. ${p} min) – stare demo.`, elfogadtaRov:'Curățătoarea a acceptat comanda.', uj:'Comandă nouă',
+  rendCim:'Comenzile mele', vanRend:'Comenzi anterioare', nincsRend:'Nu ai încă nicio comandă',
+  authCim:'Conectează-te pentru a comanda', authAl:'Ai nevoie de un cont pentru a comanda, astfel îți vezi comenzile și mai târziu.', bej:'Conectare', reg:'Înregistrare', nev:'Nume', email:'Adresa de e-mail', jelszo:'Parolă', jelszo2:'Cel puțin 6 caractere',
+  hianyMezo:'Completează toate câmpurile.', rosszJelszo:'E-mail sau parolă greșită.', foglalt:'Există deja un cont cu acest e-mail.', rovidJelszo:'Parola trebuie să aibă cel puțin 6 caractere.',
+  udv:'Salut', kijel:'Deconectare', rendSzam:'Numărul comenzilor tale', demoJelszo:'Demo: contul există doar în acest browser.',
+  szUgyfel:'Vreau să comand', szTakarito:'Lucrez ca curățătoare', bardki:'Oricine acceptă primul', bardkiAl:'Cea mai rapidă variantă', keszAl:'Imediat ce o curățătoare acceptă comanda, vei vedea în „Comenzile mele”.',
+  sUj:'În așteptare', sElf:'Acceptată', sKesz:'Finalizată', tUj:'Noi', tMunk:'Lucrările mele', tKer:'Câștigurile mele', elfogad:'Accept', befejez:'Finalizat', cimLatszik:'Adresa se vede după acceptare',
+  nincsUj:'Momentan nu există comenzi noi.', nincsMunka:'Nu ai încă nicio lucrare acceptată.', keresKesz:'Lucrări finalizate', keresVar:'Acceptate, nefinalizate', keresOssz:'Câștigul meu până acum',
+  jutInfo:p=>`Comisionul Cleaner este ${p}%, restul este al tău.`, nincsTak:'Nu există încă curățătoare înregistrate, comanda poate fi acceptată de oricine.', db:'buc',
+  szerNote:'Produsele și ustensilele de curățenie sunt aduse de curățătoare și incluse în preț.', sajatSzer:'Am produse de curățenie acasă' },
+ en:{ penz:'RON', demo:'TEMPLATE / DEMO – orders are only saved in this browser',
+  csomagCim:'Choose a package', csomagAl:'Fixed price, no surprises. Tap “What’s included?” for details.',
+  mitTart:'▼ What’s included?', elrejt:'▲ Hide', tovabb:'Next', ora:'hours', kb:'approx.',
+  hovaCim:'Where should the cleaner go?', hovaAl:'Enter your address and the size of your home',
+  cim:'Address (street, number, staircase, apartment)', cimPh:'e.g. Str. Gheorghe Doja 12, ap. 5', meret:'Home size (m²)', tel:'Phone number', megj:'Notes (key, dog, gate code…)',
+  hianyAdat:'Please enter your address and phone number.',
+  mikorCim:'When should they come?', mikorAl:'Pick a day and time', nap:'Day', kezdes:'Start time', extrak:'Extras (optional)', hianyNap:'Please pick a day.',
+  tCim:'Choose your cleaner', tAl:'Verified, rated cleaners', takaritas:'cleanings',
+  oCim:'Summary', oAl:'Check everything, then place your order', csomag:'Package', cimK:'Address', idopont:'Date & time', takarito:'Cleaner', fizetendo:'Total to pay',
+  fizMod:'Payment method', keszpenz:'Cash to the cleaner', kartya:'Bank card (demo)', megrendel:'Place order –',
+  keszCim:'Order sent!', elfogadta:(n,d,t)=>`${n} accepted. Arrives ${d} at ${t}.`, st1:'Accepted', st2:'On the way', st3:'Arrived',
+  uton:(p)=>`On the way to you (approx. ${p} min) – demo status.`, elfogadtaRov:'The cleaner accepted your order.', uj:'New order',
+  rendCim:'My orders', vanRend:'Previous orders', nincsRend:'You have no orders yet',
+  authCim:'Sign in to place an order', authAl:'You need an account to order, so you can see your orders later too.', bej:'Sign in', reg:'Sign up', nev:'Name', email:'E-mail', jelszo:'Password', jelszo2:'At least 6 characters',
+  hianyMezo:'Please fill in every field.', rosszJelszo:'Wrong e-mail or password.', foglalt:'An account with this e-mail already exists.', rovidJelszo:'Password must be at least 6 characters.',
+  udv:'Hi', kijel:'Sign out', rendSzam:'Your orders', demoJelszo:'Demo: the account only exists in this browser.',
+  szUgyfel:'I want to order', szTakarito:'I work as a cleaner', bardki:'Anyone who accepts first', bardkiAl:'The fastest option', keszAl:'As soon as a cleaner accepts, you will see it in My orders.',
+  sUj:'Waiting', sElf:'Accepted', sKesz:'Done', tUj:'New', tMunk:'My jobs', tKer:'Earnings', elfogad:'Accept', befejez:'Mark as done', cimLatszik:'Address is shown after you accept',
+  nincsUj:'No new orders right now.', nincsMunka:'You have no accepted jobs yet.', keresKesz:'Completed jobs', keresVar:'Accepted, not done yet', keresOssz:'Total earned',
+  jutInfo:p=>`Cleaner’s commission is ${p}%, the rest is yours.`, nincsTak:'No registered cleaners yet, anyone can accept the order.', db:'pcs',
+  szerNote:'Cleaning products and equipment are brought by the cleaner and included in the price.', sajatSzer:'I have cleaning products at home' }
+};
+
+const svg=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const ICO={
+ mini:svg('<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/>'),
+ kis:svg('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>'),
+ nagy:svg('<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15v4M17 17h4"/>'),
+ koltozes:svg('<path d="M3 8l9-5 9 5v9l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/>'),
+ spray:svg('<path d="M8 10h7a1 1 0 011 1v9a1 1 0 01-1 1H8a1 1 0 01-1-1v-9a1 1 0 011-1z"/><path d="M9.5 10V7.5h4V10"/><path d="M9.5 7.5V4.5h6l2 1.5v1.5h-8"/><path d="M20 8h1.5M20 10.5h2M20 13h1.5"/><path d="M7 15h9"/>'),
+ blokk:svg('<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/><path d="M11 21v-3h2v3"/>'),
+ haz:svg('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>'),
+ ok:svg('<path d="M5 12l5 5 9-10"/>')
+};
+// Csomagok: ar = fix ár, ora = időtartam
+const SZOLG = [
+ {id:'mini',ik:ICO.spray,ora:2,ar:100,
+  nev:{hu:'Mini takarítás',ro:'Curățenie Mini',en:'Mini clean'},
+  meret:{hu:'garzon / 1 szoba, max. 40 m²',ro:'garsonieră, max. 40 m²',en:'studio / 1 room, up to 40 m²'},
+  tartalom:{
+   hu:['Porszívózás minden szobában','Padló felmosása','Konyha: pult, mosogató, főzőlap törlése','Fürdőszoba: WC, mosdó, kád/zuhany','Szemét kivitele'],
+   ro:['Aspirat în toate camerele','Spălat podele','Bucătărie: blat, chiuvetă, plită','Baie: WC, lavoar, cadă/duș','Scos gunoiul'],
+   en:['Vacuuming in every room','Mopping the floors','Kitchen: counters, sink, hob','Bathroom: toilet, sink, bath/shower','Taking out the trash']}},
+ {id:'kis',ik:ICO.blokk,ora:3,ar:150,
+  nev:{hu:'Kis takarítás',ro:'Curățenie Mică',en:'Small clean'},
+  meret:{hu:'2 szobás lakás, 40–60 m²',ro:'2 camere, 40–60 m²',en:'2-room apartment, 40–60 m²'},
+  tartalom:{
+   hu:['Minden a Mini csomagból','Bútorok porolása, felületek letörlése','Tükrök, üvegfelületek lemosása','Ágyneműcsere (ha kikészíted)','Konyhai szekrények külső törlése'],
+   ro:['Tot ce include pachetul Mini','Șters praf de pe mobilier și suprafețe','Oglinzi și suprafețe de sticlă','Schimbat lenjeria (dacă o pregătești)','Dulapuri de bucătărie șterse la exterior'],
+   en:['Everything in Mini','Dusting furniture, wiping surfaces','Mirrors and glass surfaces','Changing bed linen (if you leave it out)','Kitchen cabinets wiped on the outside']}},
+ {id:'nagy',ik:ICO.haz,ora:5,ar:280,
+  nev:{hu:'Nagy takarítás',ro:'Curățenie Mare',en:'Deep clean'},
+  meret:{hu:'3 szobás lakás vagy ház, 60–90 m²',ro:'3 camere sau casă, 60–90 m²',en:'3-room apartment or house, 60–90 m²'},
+  tartalom:{
+   hu:['Minden a Kis csomagból','Ablakok belül + ablakpárkányok','Fürdőszoba mélytisztítás (vízkő, fugák)','Konyha: elszívó, csempe, főzőlap alapos tisztítás','Ágyak, kanapé alatt / mögött','Ajtók, kapcsolók, radiátorok törlése'],
+   ro:['Tot ce include pachetul Mic','Geamuri la interior + pervazuri','Baie: curățare în profunzime (calcar, rosturi)','Bucătărie: hotă, faianță, plită – curățare amănunțită','Sub paturi și canapele','Uși, întrerupătoare, calorifere șterse'],
+   en:['Everything in Small','Windows inside + window sills','Bathroom deep clean (limescale, grout)','Kitchen: extractor hood, tiles, hob – thorough clean','Under and behind beds and sofas','Doors, switches, radiators wiped']}},
+ {id:'koltozes',ik:ICO.koltozes,ora:7,ar:420,
+  nev:{hu:'Költözés / felújítás utáni',ro:'După mutare / renovare',en:'Move-out / post-renovation'},
+  meret:{hu:'bármekkora, árat egyeztetünk',ro:'orice dimensiune, preț la cerere',en:'any size, price agreed'},
+  tartalom:{
+   hu:['Minden a Nagy csomagból','Építési por és festékfoltok eltávolítása','Szekrények belül-kívül','Ablakok kívül-belül','Padló alapos súrolása'],
+   ro:['Tot ce include pachetul Mare','Praf de construcție și pete de vopsea îndepărtate','Dulapuri la interior și exterior','Geamuri la exterior și interior','Podele frecate temeinic'],
+   en:['Everything in Deep clean','Construction dust and paint stains removed','Cupboards inside and out','Windows inside and out','Thorough floor scrubbing']}}
+];
+const EXTRAK = [
+ {id:'vasal',ar:45,nev:{hu:'Vasalás (1 óra)',ro:'Călcat (1 oră)',en:'Ironing (1 hour)'}},
+ {id:'huto',ar:40,nev:{hu:'Hűtő belső tisztítása',ro:'Frigider în interior',en:'Fridge interior'}},
+ {id:'suto',ar:50,nev:{hu:'Sütő belső tisztítása',ro:'Cuptor în interior',en:'Oven interior'}},
+ {id:'ablak',ar:60,nev:{hu:'Ablak kívül (3 ablak)',ro:'Geamuri la exterior (3 geamuri)',en:'Windows outside (3 windows)'}},
+ {id:'erkely',ar:35,nev:{hu:'Erkély / terasz',ro:'Balcon / terasă',en:'Balcony / terrace'}}
+];
+const TAKARITOK = [
+ {id:1,nev:'Erzsébet K.',ertek:4.9,db:132,ik:'👩'},
+ {id:2,nev:'Mária B.',ertek:4.8,db:87,ik:'👩‍🦰'},
+ {id:3,nev:'Ildikó T.',ertek:4.7,db:54,ik:'👩‍🦳'}
+];
+const SZER_KEDV = 10;              // kedvezmény (lej), ha az ügyfélnek van otthon tisztítószere
+const JUTALEK = 0.28;              // a Cleaner jutaléka (28%), a takarító a többit kapja
+const IDOPONTOK=['08:00','10:00','12:00','14:00','16:00'];
+// =====================================================================
+
+const SZINEK={
+ kek:{c:'#2f6bff',blue:'#2f6bff',blue2:'#5aa2ff',rgb:'47,107,255',rgb2:'90,162,255',lrgb:'110,145,225',t1:'#e4eeff',t2:'#cfe0ff',b1:'#e6efff',b3:'#e3edff'},
+ turkiz:{c:'#0fb5a6',blue:'#0fb5a6',blue2:'#4fd8c8',rgb:'15,181,166',rgb2:'79,216,200',lrgb:'100,190,180',t1:'#dcf6f2',t2:'#c3efe8',b1:'#e0f7f4',b3:'#dcf3ef'},
+ zold:{c:'#16a34a',blue:'#16a34a',blue2:'#4ade80',rgb:'22,163,74',rgb2:'74,222,128',lrgb:'100,185,130',t1:'#dcf5e5',t2:'#c3ecd2',b1:'#e3f6ea',b3:'#dcf1e4'},
+ lila:{c:'#7c3aed',blue:'#7c3aed',blue2:'#a78bfa',rgb:'124,58,237',rgb2:'167,139,250',lrgb:'150,130,215',t1:'#ece6ff',t2:'#dcd0ff',b1:'#eee8ff',b3:'#e7e0ff'},
+ korall:{c:'#f0506e',blue:'#f0506e',blue2:'#ff8a65',rgb:'240,80,110',rgb2:'255,138,101',lrgb:'225,140,150',t1:'#ffe4e9',t2:'#ffd1d9',b1:'#ffe9ec',b3:'#ffe3df'}
+};
+let SZIN='turkiz';
+function szinAlkalmaz(){const s=SZINEK[SZIN],st=document.documentElement.style;
+ for(const k of ['blue','blue2','rgb','rgb2','lrgb','t1','t2','b1','b3'])st.setProperty('--'+k,s[k]);
+ document.getElementById('szinek').innerHTML=Object.keys(SZINEK).map(n=>`<button class="${n==SZIN?'on':''}" style="background:${SZINEK[n].c}" onclick="SZIN='${n}';try{ST.set('cl_szin','${n}')}catch(e){}szinAlkalmaz()"></button>`).join('')}
+let L=ALAP_NYELV;
+try{const m=ST.get('cl_nyelv');if(NYELVEK.includes(m))L=m}catch(e){}
+const t=k=>T[L][k];
+const $=id=>document.getElementById(id);
+let lp=0, r=ures();
+function ures(){return{szolg:null,extra:[],nyitva:null,cim:'',lakas:'',telefon:'',datum:'',ido:'',takarito:'any',sajatSzer:false,fiz:'keszpenz',megj:''}}
+function nyelvValt(n){L=n;try{ST.set('cl_nyelv',n)}catch(e){}rajz()}
+function ar(){const s=SZOLG.find(x=>x.id===r.szolg);if(!s)return 0;return s.ar+EXTRAK.filter(e=>r.extra.includes(e.id)).reduce((a,e)=>a+e.ar,0)-(r.sajatSzer?SZER_KEDV:0)}
+function bont(id){r.nyitva=r.nyitva==id?null:id;rajz()}
+function extraVal(id){const i=r.extra.indexOf(id);i<0?r.extra.push(id):r.extra.splice(i,1);mentUrlap();rajz()}
+function mentett(){try{return JSON.parse(ST.get('cl_rendelesek')||'[]')}catch(e){return[]}}
+function ment(o){const l=mentett();l.unshift(o);try{ST.set('cl_rendelesek',JSON.stringify(l))}catch(e){}}
+function holnap(){const d=new Date();d.setDate(d.getDate()+1);return d.toISOString().slice(0,10)}
+function mentUrlap(){ // a beírt adatok megmaradnak nyelvváltáskor
+  if($('cim')){r.cim=$('cim').value;r.lakas=$('lakas').value;r.telefon=$('tel').value;r.megj=$('megj').value}
+  if($('datum')){r.datum=$('datum').value;r.ido=$('ido').value}
+}
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+let USER=null;try{USER=ST.get('cl_user')}catch(e){}
+let authMod='bej',authHiba='',kovet=false,authV={nev:'',em:'',tel:''},authRole='ugyfel',ct='uj';
+function szerep(){const u=users()[USER];return u&&u.role==='takarito'?'takarito':'ugyfel'}
+const jutalek=o=>Math.round(o.ar*(1-JUTALEK));
+function rendFriss(id,fn){const l=mentett();const o=l.find(x=>x.id===id);if(o)fn(o);ST.set('cl_rendelesek',JSON.stringify(l))}
+function elfogad(id){rendFriss(id,o=>{if((o.status||'uj')==='uj'&&(!o.pref||o.pref===USER)){o.status='elfogadva';o.cleaner=USER}});rajz()}
+function befejez(id){rendFriss(id,o=>{if(o.cleaner===USER&&o.status==='elfogadva')o.status='kesz'});rajz()}
+function users(){try{return JSON.parse(ST.get('cl_users')||'{}')}catch(e){return{}}}
+async function hash(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return btoa(unescape(encodeURIComponent(s)))}}
+function authOlvas(){if($('aem'))authV={nev:$('anev')?$('anev').value:authV.nev,em:$('aem').value,tel:$('atel')?$('atel').value:authV.tel}}
+async function authKuld(){authOlvas();const em=authV.em.trim().toLowerCase(),pw=$('apw').value,U=users();
+  if(authMod=='reg'){const nm=authV.nev.trim(),tl=authV.tel.trim();
+    if(!nm||!em||!tl||!pw)authHiba=t('hianyMezo');
+    else if(pw.length<6)authHiba=t('rovidJelszo');
+    else if(U[em])authHiba=t('foglalt');
+    else{U[em]={nev:nm,tel:tl,role:authRole,h:await hash(pw)};try{ST.set('cl_users',JSON.stringify(U))}catch(e){}belep(em);return}
+  }else{
+    if(!em||!pw)authHiba=t('hianyMezo');
+    else if(!U[em]||U[em].h!==await hash(pw))authHiba=t('rosszJelszo');
+    else{belep(em);return}
+  }
+  rajz()}
+function belep(em){USER=em;try{ST.set('cl_user',em)}catch(e){}authHiba='';authV={nev:'',em:'',tel:''};const u=users()[em];if(u&&u.role==='takarito'){ct='uj';lp=9;kovet=false;rajz();return}if(u&&!r.telefon)r.telefon=u.tel;lp=(kovet&&r.szolg)?1:0;kovet=false;rajz()}
+function kilep(){USER=null;try{ST.del('cl_user')}catch(e){}lp=0;rajz()}
+function fiokGomb(){kovet=false;lp=USER?(szerep()=='takarito'?9:8):7;rajz()}
+function kezdes(){if(USER&&szerep()=='takarito'){lp=9;rajz();return}if(USER){const u=users()[USER];if(u&&!r.telefon)r.telefon=u.tel;lp=1}else{kovet=true;lp=7}rajz()}
+function rajz(){
+  document.documentElement.lang=L;
+  $('nyelv').innerHTML=NYELVEK.map(n=>`<button class="${n==L?'on':''}" onclick="mentUrlap();nyelvValt('${n}')">${n.toUpperCase()}</button>`).join('');
+  $('demo').textContent=t('demo');
+  $('vissza').style.display=((lp>0&&lp<5)||(lp>=6&&lp!=9))?'grid':'none';
+  $('fiokbtn').className=USER?'in':'';
+  $('lepes').innerHTML=lp<5?[0,1,2,3,4].map(i=>`<i class="${i<=lp?'on':''}"></i>`).join(''):'';
+  const P=t('penz');
+  let h='',g='';
+  if(lp==0){
+    h=`<h2>${t('csomagCim')}</h2><p class="al">${t('csomagAl')}<br><b style="color:var(--blue)">${t('szerNote')}</b></p>`+SZOLG.map(s=>`<div class="kartya ${r.szolg==s.id?'on':''}" style="flex-wrap:wrap" onclick="r.szolg='${s.id}';rajz()"><span class="ik">${s.ik}</span><div><b>${s.nev[L]}</b><small>${s.meret[L]} · ${t('kb')} ${s.ora} ${t('ora')}</small></div><span class="ar">${s.ar} ${P}</span>
+      <div style="width:100%"><a onclick="event.stopPropagation();bont('${s.id}')">${r.nyitva==s.id?t('elrejt'):t('mitTart')}</a>
+      ${r.nyitva==s.id?`<ul style="margin:8px 0 0 18px;font-size:14px;line-height:1.6">${s.tartalom[L].map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div></div>`).join('');
+    g=`<button class="gomb" ${r.szolg?'':'disabled'} onclick="kezdes()">${t('tovabb')}</button>`;
+  }
+  if(lp==1){
+    h=`<h2>${t('hovaCim')}</h2><p class="al">${t('hovaAl')}</p>
+    <label>${t('cim')}</label><input id="cim" value="${r.cim}" placeholder="${t('cimPh')}">
+    <div class="sor"><div><label>${t('meret')}</label><input id="lakas" type="number" value="${r.lakas}" placeholder="60"></div>
+    <div><label>${t('tel')}</label><input id="tel" type="tel" value="${r.telefon}" placeholder="07xx xxx xxx"></div></div>
+    <label>${t('megj')}</label><textarea id="megj" rows="3">${r.megj}</textarea>`;
+    g=`<button class="gomb" onclick="mentCim()">${t('tovabb')}</button>`;
+  }
+  if(lp==2){
+    h=`<h2>${t('mikorCim')}</h2><p class="al">${t('mikorAl')}</p>
+    <label>${t('nap')}</label><input id="datum" type="date" min="${holnap()}" value="${r.datum||holnap()}">
+    <label>${t('kezdes')}</label><select id="ido">${IDOPONTOK.map(x=>`<option ${r.ido==x?'selected':''}>${x}</option>`).join('')}</select>
+    <label>${t('extrak')}</label>`+EXTRAK.map(e=>`<div class="kartya ${r.extra.includes(e.id)?'on':''}" onclick="extraVal('${e.id}')"><span class="chk">${ICO.ok}</span><div><b>${e.nev[L]}</b></div><span class="ar">+${e.ar} ${P}</span></div>`).join('');
+    h+=`<div class="kartya ${r.sajatSzer?'on':''}" onclick="r.sajatSzer=!r.sajatSzer;mentUrlap();rajz()"><span class="chk">${ICO.ok}</span><div><b>${t('sajatSzer')}</b></div><span class="ar">−${SZER_KEDV} ${P}</span></div>`;
+    g=`<button class="gomb" onclick="mentIdo()">${t('tovabb')}</button>`;
+  }
+  if(lp==3){
+    const tk=Object.entries(users()).filter(([e,u])=>u.role==='takarito');
+    h=`<h2>${t('tCim')}</h2><p class="al">${tk.length?t('tAl'):t('nincsTak')}</p><div class="lista">
+    <div class="kartya ${r.takarito=='any'?'on':''}" style="cursor:pointer" onclick="r.takarito='any';rajz()"><span class="ik">${ICO.ok}</span><div><b>${t('bardki')}</b><small>${t('bardkiAl')}</small></div></div>`+
+    tk.map(([e,u])=>{const n=mentett().filter(o=>o.cleaner===e&&o.status==='kesz').length;return `<div class="kartya ${r.takarito==e?'on':''}" style="cursor:pointer" onclick="r.takarito='${esc(e)}';rajz()"><span class="av">${esc(u.nev[0].toUpperCase())}</span><div><b>${esc(u.nev)}</b><small>${n} ${t('takaritas')}</small></div></div>`}).join('')+`</div>`;
+    g=`<button class="gomb" onclick="lp=4;rajz()">${t('tovabb')}</button>`;
+  }
+  if(lp==4){
+    const s=SZOLG.find(x=>x.id==r.szolg),k=TAKARITOK.find(x=>x.id==r.takarito);
+    h=`<h2>${t('oCim')}</h2><p class="al">${t('oAl')}</p>
+    <div class="osszeg"><div><span>${t('csomag')}</span><span>${s.nev[L]}</span></div><div><span>${t('cimK')}</span><span>${r.cim}</span></div><div><span>${t('idopont')}</span><span>${r.datum} ${r.ido}</span></div><div><span>${t('takarito')}</span><span>${(r.takarito!=='any'&&users()[r.takarito])?esc(users()[r.takarito].nev):t('bardki')}</span></div><div><span>${s.nev[L]} (${t('kb')} ${s.ora} ${t('ora')})</span><span>${s.ar} ${P}</span></div>${EXTRAK.filter(e=>r.extra.includes(e.id)).map(e=>`<div><span>+ ${e.nev[L]}</span><span>${e.ar} ${P}</span></div>`).join('')}${r.sajatSzer?`<div><span>${t('sajatSzer')}</span><span>−${SZER_KEDV} ${P}</span></div>`:''}<div><span>${t('fizetendo')}</span><span>${ar()} ${P}</span></div></div>
+    <label>${t('fizMod')}</label><select onchange="r.fiz=this.value"><option value="keszpenz" ${r.fiz=='keszpenz'?'selected':''}>${t('keszpenz')}</option><option value="kartya" ${r.fiz=='kartya'?'selected':''}>${t('kartya')}</option></select>`;
+    g=`<button class="gomb" onclick="rendel()">${t('megrendel')} ${ar()} ${P}</button>`;
+  }
+  if(lp==5){
+    h=`<div class="kesz"><div class="ok">${ICO.ok}</div><h2>${t('keszCim')}</h2><p class="al">${t('keszAl')}</p></div>`;
+    g=`<button class="gomb" onclick="ujra()">${t('uj')}</button>`;
+  }
+  if(lp==6){
+    const l=mentett().filter(o=>o.user===USER);
+    h=`<h2>${t('rendCim')}</h2><p class="al">${l.length?t('vanRend'):t('nincsRend')}</p><div class="lista">`+l.map(o=>`<div class="kartya"><span class="ik">${ICO.mini}</span><div><b>${(SZOLG.find(x=>x.id==o.szolgId)||{nev:{[L]:o.szolg}}).nev[L]}</b><small>${esc(o.datum)} ${esc(o.ido)} · ${t({uj:'sUj',elfogadva:'sElf',kesz:'sKesz'}[o.status||'uj'])}${o.cleaner&&users()[o.cleaner]?' · '+esc(users()[o.cleaner].nev):''}</small></div><span class="ar">${o.ar} ${P}</span></div>`).join('')+`</div>`;
+    g=`<button class="gomb" onclick="ujra()">${t('uj')}</button>`;
+  }
+  if(lp==7){
+    h=`<h2>${t('authCim')}</h2><p class="al">${t('authAl')}</p>
+    <div class="nyelv" style="margin:0 0 6px"><button class="${authMod=='bej'?'on':''}" onclick="authOlvas();authMod='bej';authHiba='';rajz()">${t('bej')}</button><button class="${authMod=='reg'?'on':''}" onclick="authOlvas();authMod='reg';authHiba='';rajz()">${t('reg')}</button></div>
+    ${authMod=='reg'?`<div class="nyelv" style="margin:0 0 6px"><button class="${authRole=='ugyfel'?'on':''}" onclick="authOlvas();authRole='ugyfel';rajz()">${t('szUgyfel')}</button><button class="${authRole=='takarito'?'on':''}" onclick="authOlvas();authRole='takarito';rajz()">${t('szTakarito')}</button></div><label>${t('nev')}</label><input id="anev" value="${esc(authV.nev)}" autocomplete="name">`:''}
+    <label>${t('email')}</label><input id="aem" type="email" value="${esc(authV.em)}" autocomplete="email">
+    ${authMod=='reg'?`<label>${t('tel')}</label><input id="atel" type="tel" value="${esc(authV.tel)}" placeholder="07xx xxx xxx" autocomplete="tel">`:''}
+    <label>${t('jelszo')}</label><input id="apw" type="password" placeholder="${t('jelszo2')}" autocomplete="${authMod=='reg'?'new-password':'current-password'}">
+    ${authHiba?`<p class="hiba">${authHiba}</p>`:''}
+    <p class="al" style="margin-top:14px;font-size:12px">${t('demoJelszo')}</p>`;
+    g=`<button class="gomb" onclick="authKuld()">${authMod=='reg'?t('reg'):t('bej')}</button>`;
+  }
+  if(lp==8){
+    const u=users()[USER]||{nev:USER,tel:''};const n=mentett().filter(o=>o.user===USER).length;
+    h=`<div style="text-align:center;padding-top:10px"><div class="av" style="width:76px;height:76px;font-size:30px;margin:0 auto 14px">${esc((u.nev||'?')[0].toUpperCase())}</div><h2>${t('udv')}, ${esc(u.nev)}!</h2><p class="al">${esc(USER)}${u.tel?' · '+esc(u.tel):''}</p></div>
+    <div class="kartya" style="cursor:pointer" onclick="lp=6;rajz()"><span class="ik">${ICO.ok}</span><div><b>${t('rendCim')}</b><small>${t('rendSzam')}: ${n}</small></div></div>`;
+    g=`<button class="gomb" style="background:#fff;color:var(--blue);box-shadow:none;border:1px solid var(--line)" onclick="kilep()">${t('kijel')}</button><button class="gomb" onclick="ujra()">${t('uj')}</button>`;
+  }
+  if(lp==9){
+    const u=users()[USER]||{nev:USER},all=mentett();
+    const uj=all.filter(o=>(o.status||'uj')==='uj'&&(!o.pref||o.pref===USER)),mine=all.filter(o=>o.cleaner===USER);
+    const csNev=o=>esc((SZOLG.find(x=>x.id==o.szolgId)||{nev:{[L]:o.szolg}}).nev[L]);
+    const btn=(fn,id,txt)=>`<button class="gomb" style="flex:none;width:100%;padding:12px;font-size:15px" onclick="${fn}('${id}')">${txt}</button>`;
+    const tabs=`<div class="nyelv" style="margin:0 0 14px">`+[['uj','tUj',uj.length],['munk','tMunk',mine.filter(o=>o.status==='elfogadva').length],['ker','tKer','']].map(([k,l,n])=>`<button class="${ct==k?'on':''}" onclick="ct='${k}';rajz()">${t(l)}${n!==''?' ('+n+')':''}</button>`).join('')+`</div>`;
+    let body='';
+    if(ct=='uj')body=uj.length?uj.map(o=>`<div class="kartya" style="flex-wrap:wrap;cursor:default"><span class="ik">${ICO.blokk}</span><div><b>${csNev(o)}</b><small>${esc(o.datum)} ${esc(o.ido)} · ${t('kb')} ${o.ora||''} ${t('ora')}</small><small style="display:block">${t('cimLatszik')}</small></div><span class="ar">${jutalek(o)} ${P}</span>${btn('elfogad',o.id,t('elfogad'))}</div>`).join(''):`<p class="al">${t('nincsUj')}</p>`;
+    if(ct=='munk'){const ms=[...mine].sort((a,b)=>(a.status=='kesz')-(b.status=='kesz'));
+      body=ms.length?ms.map(o=>`<div class="kartya" style="flex-wrap:wrap;cursor:default"><span class="ik">${ICO.haz}</span><div><b>${csNev(o)}</b><small>${esc(o.datum)} ${esc(o.ido)} · ${t(o.status=='kesz'?'sKesz':'sElf')}</small><small style="display:block">${esc(o.cim)} · ${esc(o.telefon)}</small>${o.megj?`<small style="display:block">${esc(o.megj)}</small>`:''}${o.sajatSzer?`<small style="display:block">• ${t('sajatSzer')}</small>`:''}</div><span class="ar">${jutalek(o)} ${P}</span>${o.status=='elfogadva'?btn('befejez',o.id,t('befejez')):''}</div>`).join(''):`<p class="al">${t('nincsMunka')}</p>`}
+    if(ct=='ker'){const kesz=mine.filter(o=>o.status=='kesz'),varo=mine.filter(o=>o.status=='elfogadva'),sum=a=>a.reduce((s,o)=>s+jutalek(o),0);
+      body=`<div class="osszeg"><div><span>${t('keresKesz')}</span><span>${kesz.length} ${t('db')}</span></div><div><span>${t('keresVar')}</span><span>${sum(varo)} ${P}</span></div><div><span>${t('keresOssz')}</span><span>${sum(kesz)} ${P}</span></div></div><p class="al" style="margin-top:12px">${t('jutInfo')(Math.round(JUTALEK*100))}</p>`}
+    h=`<h2>${t('udv')}, ${esc(u.nev)}!</h2><p class="al">${esc(USER)}</p>${tabs}${body}`;
+    g=`<button class="gomb" style="background:#fff;color:var(--blue);box-shadow:none;border:1px solid var(--line)" onclick="kilep()">${t('kijel')}</button>`;
+  }
+  $('tartalom').innerHTML=h;$('lab').innerHTML=g;
+  if(window.utolsoLp!==lp){const m=$('tartalom');m.classList.remove('anim');void m.offsetWidth;m.classList.add('anim');window.utolsoLp=lp}
+}
+function mentCim(){mentUrlap();r.cim=r.cim.trim();r.telefon=r.telefon.trim();
+  if(!r.cim||!r.telefon){alert(t('hianyAdat'));return}lp=2;rajz()}
+function mentIdo(){mentUrlap();if(!r.datum){alert(t('hianyNap'));return}lp=3;rajz()}
+function rendel(){if(!USER){kovet=true;lp=7;rajz();return}const s=SZOLG.find(x=>x.id==r.szolg);
+  ment({id:Date.now()+'-'+Math.random().toString(36).slice(2,6),user:USER,szolgId:s.id,szolg:s.nev[L],datum:r.datum,ido:r.ido,pref:r.takarito==='any'?'':r.takarito,status:'uj',cleaner:'',ar:ar(),ora:s.ora,cim:r.cim,telefon:r.telefon,megj:r.megj,sajatSzer:r.sajatSzer,extra:r.extra});lp=5;rajz()}
+function vissza(){mentUrlap();authOlvas();if(lp>=6)lp=0;else if(lp>0)lp--;rajz()}
+function elozmeny(){lp=(USER&&szerep()=='takarito')?9:6;rajz()}
+function ujra(){r=ures();lp=0;rajz()}
+szinAlkalmaz();rajz();
+</script>
+</body>
+</html>
